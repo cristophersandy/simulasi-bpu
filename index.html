@@ -164,10 +164,7 @@ footer{font-size:.76rem;color:var(--muted);max-width:90ch}
         <label for="saldo">Saldo JHT saat ini (opsional)</label>
         <div class="prefix"><span>Rp</span><input type="text" inputmode="numeric" id="saldo" value="0"></div>
       </div>
-      <div class="row2">
-        <div class="field"><label for="ret">Hasil pengembangan JHT / th</label><input type="number" id="ret" step="0.01" min="0" max="20" value="5.51"><span class="hint">% · realisasi 2025 JHT konvensional</span></div>
-        <div class="field"><label for="grow">Kenaikan penghasilan / th</label><input type="number" id="grow" step="0.5" min="0" max="30" value="3"><span class="hint">% · asumsi</span></div>
-      </div>
+      <div class="field"><label for="ret">Hasil pengembangan JHT / th</label><input type="number" id="ret" step="0.01" min="0" max="20" value="5.51"><span class="hint">% · realisasi 2025 JHT konvensional</span></div>
     </form>
 
     <div class="results">
@@ -281,7 +278,7 @@ footer{font-size:.76rem;color:var(--muted);max-width:90ch}
     const inc=Math.max(1e6,parse($('inc').value));
     const jhtOn=$('jhtOn').checked, disc=$('disc').checked;
     const age=Math.round(num('age',30)); let claim=Math.round(num('claim',56)); if(claim<=age)claim=age+1;
-    const r=num('ret',5.51)/100, g=num('grow',0)/100, saldo0=parse($('saldo').value);
+    const r=num('ret',5.51)/100, saldo0=parse($('saldo').value);
     const f=disc?0.5:1;
     const jkk=0.01*inc*f, jkm=6800*f, jht=jhtOn?0.02*inc:0, total=jkk+jkm+jht;
     document.querySelectorAll('#chips button').forEach(b=>b.setAttribute('aria-pressed',Number(b.dataset.v)===inc?'true':'false'));
@@ -302,7 +299,7 @@ footer{font-size:.76rem;color:var(--muted);max-width:90ch}
     $('jhtBox').hidden=!jhtOn; $('jhtEmpty').hidden=jhtOn;
     if(jhtOn){
       const years=claim-age, rm=Math.pow(1+r,1/12)-1; let bal=saldo0, contrib=0; const yr=[];
-      for(let y=1;y<=years;y++){const c=0.02*inc*Math.pow(1+g,y-1);for(let m=0;m<12;m++){bal=bal*(1+rm)+c;contrib+=c}
+      for(let y=1;y<=years;y++){const c=0.02*inc;for(let m=0;m<12;m++){bal=bal*(1+rm)+c;contrib+=c}
         yr.push({y,age:age+y,c,contrib,contribAll:contrib+saldo0,bal})}
       const last=yr[yr.length-1], dev=last.bal-last.contribAll;
       const pa=last.bal>0?last.contribAll/last.bal*100:100, pb=100-pa;
@@ -334,7 +331,7 @@ footer{font-size:.76rem;color:var(--muted);max-width:90ch}
   }
 
   ['inc','saldo'].forEach(id=>{const el=$(id);el.addEventListener('input',calc);el.addEventListener('blur',()=>{fmtIn(el);calc()})});
-  ['jhtOn','disc','age','claim','ret','grow'].forEach(id=>$(id).addEventListener('input',calc));
+  ['jhtOn','disc','age','claim','ret'].forEach(id=>$(id).addEventListener('input',calc));
   $('chips').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;$('inc').value=Number(b.dataset.v).toLocaleString('id-ID');calc()});
   $('f').addEventListener('submit',e=>e.preventDefault());
   calc();
