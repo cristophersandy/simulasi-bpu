@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Simulasi Manfaat BPU</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: panel isian kiri (sticky di desktop), hasil kanan; satu kolom di ponsel */
+:root{
+  --bg:#F3F6F4; --surface:#FFFFFF; --ink:#13231E; --muted:#5A6B65; --line:#DCE4E0;
+  --accent:#0B7A55; --accent-soft:#E2F2EA; --gold:#C9822A; --gold-soft:#F8EBD8; --warn:#9A5B00;
+  --sans:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0E1613; --surface:#15201C; --ink:#E4EDE9; --muted:#97A6A0; --line:#26332E;
+  --accent:#41C08E; --accent-soft:#163A2C; --gold:#E3A653; --gold-soft:#3A2C17; --warn:#E3A653; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1613; --surface:#15201C; --ink:#E4EDE9; --muted:#97A6A0; --line:#26332E;
+  --accent:#41C08E; --accent-soft:#163A2C; --gold:#E3A653; --gold-soft:#3A2C17; --warn:#E3A653; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 48px}
+.wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:24px}
+header h1{font-size:clamp(1.6rem,3.4vw,2.3rem);font-weight:800;letter-spacing:-.02em;margin:0;text-wrap:balance}
+header p{margin:6px 0 0;color:var(--muted);max-width:68ch}
+.eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.grid{display:grid;grid-template-columns:340px minmax(0,1fr);gap:24px;align-items:start}
+@media (max-width:880px){.grid{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:16px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px)}
+@media (max-width:880px){.panel{position:static}}
+.panel h2{font-size:1rem;margin:0}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label,.lbl{font-size:.82rem;font-weight:600}
+.hint{font-size:.76rem;color:var(--muted)}
+input[type=number],input[type=text]{width:100%;font:500 1rem var(--mono);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:9px 11px}
+input:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.prefix{position:relative}.prefix span{position:absolute;left:11px;top:50%;transform:translateY(-50%);font:500 .9rem var(--mono);color:var(--muted)}
+.prefix input{padding-left:36px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{font:600 .76rem var(--sans);border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:99px;padding:4px 10px;cursor:pointer}
+.chips button:hover{border-color:var(--accent);color:var(--accent)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.toggle{display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:.86rem}
+.toggle input{margin-top:3px;accent-color:var(--accent);width:16px;height:16px}
+.toggle b{display:block;font-weight:600}
+.results{display:flex;flex-direction:column;gap:20px;min-width:0}
+.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:1060px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.tile .k{font-size:.74rem;color:var(--muted);font-weight:600}
+.tile .v{font:600 clamp(1.05rem,2.1vw,1.35rem) var(--mono);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.tile .s{font-size:.74rem;color:var(--muted)}
+.tile.hero{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.tile.hero .k,.tile.hero .s{color:var(--surface);opacity:.85}
+section.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.card h2{margin:0;font-size:1.15rem;font-weight:700;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.tag{font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:99px;background:var(--accent-soft);color:var(--accent)}
+.tag.gold{background:var(--gold-soft);color:var(--warn)}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700}
+td.num,th.num{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+td small{display:block;color:var(--muted);font-size:.76rem}
+tr.total td{font-weight:700;border-bottom:none}
+.scroll{overflow-x:auto}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.8rem;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:middle}
+.split{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:620px){.split{grid-template-columns:minmax(0,1fr)}}
+.split div{border-left:3px solid var(--line);padding:2px 0 2px 12px}
+.split div:nth-child(1){border-color:var(--accent)}.split div:nth-child(2){border-color:var(--gold)}
+.split .k{font-size:.74rem;color:var(--muted);font-weight:600}
+.split .v{font:600 1.05rem var(--mono);font-variant-numeric:tabular-nums}
+details summary{cursor:pointer;font-weight:600;font-size:.86rem;color:var(--accent)}
+.note{font-size:.8rem;color:var(--muted);border-top:1px dashed var(--line);padding-top:12px}
+.note ul{margin:6px 0 0;padding-left:18px}
+.empty{color:var(--muted);font-size:.9rem;padding:18px;border:1px dashed var(--line);border-radius:10px;text-align:center}
+.inline-in{display:inline-flex;align-items:center;gap:6px}
+.inline-in input{width:64px;padding:4px 6px;font-size:.85rem}
+footer{font-size:.76rem;color:var(--muted);max-width:90ch}
+@media (prefers-reduced-motion:no-preference){.bar{transition:height .25s,y .25s}}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Peserta Bukan Penerima Upah · BPJS Ketenagakerjaan</div>
+    <h1>Simulasi Manfaat BPU</h1>
+    <p>Hitung iuran bulanan, proyeksi saldo Jaminan Hari Tua, serta perkiraan manfaat Jaminan Kecelakaan Kerja dan Jaminan Kematian berdasarkan penghasilan yang dilaporkan.</p>
+  </header>
+
+  <div class="grid">
+    <form class="panel" id="f" autocomplete="off">
+      <h2>Data peserta</h2>
+      <div class="field">
+        <label for="inc">Penghasilan dilaporkan / bulan</label>
+        <div class="prefix"><span>Rp</span><input type="text" inputmode="numeric" id="inc" value="2.000.000"></div>
+        <div class="chips" id="chips">
+          <button type="button" data-v="1000000">1 jt</button><button type="button" data-v="2000000">2 jt</button>
+          <button type="button" data-v="3500000">3,5 jt</button><button type="button" data-v="5000000">5 jt</button>
+        </div>
+        <div class="hint">Minimal Rp1.000.000.</div>
+      </div>
+      <label class="toggle"><input type="checkbox" id="jhtOn" checked><span><b>Ikut program JHT</b><span class="hint">JKK dan JKM wajib. JHT pilihan.</span></span></label>
+      <label class="toggle"><input type="checkbox" id="disc" checked><span><b>Diskon 50% iuran JKK & JKM</b><span class="hint">Berlaku April–Desember 2026. Manfaat tidak berkurang.</span></span></label>
+      <div class="row2">
+        <div class="field"><label for="age">Usia sekarang</label><input type="number" id="age" min="15" max="70" value="30"></div>
+        <div class="field"><label for="claim">Usia klaim JHT</label><input type="number" id="claim" min="16" max="80" value="56"></div>
+      </div>
+      <div class="field">
+        <label for="saldo">Saldo JHT saat ini (opsional)</label>
+        <div class="prefix"><span>Rp</span><input type="text" inputmode="numeric" id="saldo" value="0"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label for="ret">Hasil pengembangan JHT / th</label><input type="number" id="ret" step="0.01" min="0" max="20" value="5.51"><span class="hint">% · realisasi 2025 JHT konvensional</span></div>
+        <div class="field"><label for="grow">Kenaikan penghasilan / th</label><input type="number" id="grow" step="0.5" min="0" max="30" value="3"><span class="hint">% · asumsi</span></div>
+      </div>
+    </form>
+
+    <div class="results">
+      <div class="tiles">
+        <div class="tile hero"><span class="k">Iuran per bulan</span><span class="v" id="tIuran">–</span><span class="s" id="tIuranS"></span></div>
+        <div class="tile"><span class="k" id="tJhtK">Saldo JHT</span><span class="v" id="tJht">–</span><span class="s" id="tJhtS"></span></div>
+        <div class="tile"><span class="k">Meninggal akibat kecelakaan kerja</span><span class="v" id="tJkk">–</span><span class="s">+ beasiswa 2 anak s.d. Rp174 jt</span></div>
+        <div class="tile"><span class="k">Meninggal bukan kecelakaan kerja</span><span class="v">Rp42.000.000</span><span class="s">+ beasiswa jika iuran ≥ 3 tahun</span></div>
+      </div>
+
+      <section class="card">
+        <h2>Rincian iuran <span class="tag" id="progTag">JKK · JKM · JHT</span></h2>
+        <div class="scroll"><table>
+          <thead><tr><th>Program</th><th>Dasar</th><th class="num">Per bulan</th><th class="num">Per tahun</th></tr></thead>
+          <tbody id="iuranBody"></tbody>
+        </table></div>
+      </section>
+
+      <section class="card">
+        <h2>Jaminan Hari Tua <span class="tag gold">Tabungan</span></h2>
+        <div id="jhtBox">
+          <div class="split" id="jhtSplit"></div>
+          <div class="legend" style="margin-top:14px"><span><i style="background:var(--accent)"></i>Akumulasi iuran</span><span><i style="background:var(--gold)"></i>Hasil pengembangan</span></div>
+          <div class="scroll" id="chart"></div>
+          <details><summary>Tabel per tahun</summary>
+            <div class="scroll"><table>
+              <thead><tr><th>Tahun ke</th><th>Usia</th><th class="num">Iuran/bulan</th><th class="num">Total iuran</th><th class="num">Hasil pengembangan</th><th class="num">Saldo akhir</th></tr></thead>
+              <tbody id="yearBody"></tbody>
+            </table></div>
+          </details>
+        </div>
+        <div class="empty" id="jhtEmpty" hidden>Program JHT tidak dipilih. Centang “Ikut program JHT” untuk melihat proyeksi saldo.</div>
+        <div class="note">Saldo JHT = akumulasi iuran + hasil pengembangan. Bisa diklaim penuh saat usia 56 tahun, meninggal, cacat total tetap, atau berhenti sebagai peserta. Klaim sebagian (10% atau 30%) bisa diajukan setelah kepesertaan minimal 10 tahun. Hasil pengembangan aktual ditetapkan tiap tahun dan bisa berbeda dari asumsi.</div>
+      </section>
+
+      <section class="card">
+        <h2>Jaminan Kecelakaan Kerja <span class="tag">Risiko kerja</span></h2>
+        <div class="scroll"><table>
+          <thead><tr><th>Manfaat</th><th>Ketentuan</th><th class="num">Estimasi</th></tr></thead>
+          <tbody id="jkkBody"></tbody>
+        </table></div>
+        <div class="note">Termasuk kecelakaan dalam perjalanan pergi-pulang tempat kerja dan penyakit akibat kerja. Perawatan tanpa batas biaya sesuai kebutuhan medis di fasilitas kesehatan kerja sama.</div>
+      </section>
+
+      <section class="card">
+        <h2>Jaminan Kematian <span class="tag">Ahli waris</span></h2>
+        <div class="scroll"><table>
+          <thead><tr><th>Manfaat</th><th>Ketentuan</th><th class="num">Nilai</th></tr></thead>
+          <tbody>
+            <tr><td>Santunan kematian</td><td>Sekaligus</td><td class="num">Rp20.000.000</td></tr>
+            <tr><td>Santunan berkala</td><td>24 bulan, dibayar sekaligus</td><td class="num">Rp12.000.000</td></tr>
+            <tr><td>Biaya pemakaman</td><td>Sekaligus</td><td class="num">Rp10.000.000</td></tr>
+            <tr class="total"><td>Total uang tunai</td><td></td><td class="num">Rp42.000.000</td></tr>
+          </tbody>
+        </table></div>
+        <div class="lbl" style="margin-top:4px">Beasiswa pendidikan (maks. 2 anak)</div>
+        <div class="scroll"><table>
+          <thead><tr><th>Jenjang</th><th class="num">Per anak / tahun</th><th class="num">Maks. tahun</th><th class="num">Maks. per anak</th></tr></thead>
+          <tbody>
+            <tr><td>TK – SD / sederajat</td><td class="num">Rp1.500.000</td><td class="num">8</td><td class="num">Rp12.000.000</td></tr>
+            <tr><td>SMP / sederajat</td><td class="num">Rp2.000.000</td><td class="num">3</td><td class="num">Rp6.000.000</td></tr>
+            <tr><td>SMA / sederajat</td><td class="num">Rp3.000.000</td><td class="num">3</td><td class="num">Rp9.000.000</td></tr>
+            <tr><td>Perguruan tinggi (maks. S1) / pelatihan</td><td class="num">Rp12.000.000</td><td class="num">5</td><td class="num">Rp60.000.000</td></tr>
+            <tr class="total"><td>Total 2 anak</td><td></td><td></td><td class="num">Rp174.000.000</td></tr>
+          </tbody>
+        </table></div>
+        <div class="note">Beasiswa JKM berlaku jika masa iuran minimal 3 tahun. Beasiswa yang sama berlaku pada JKK (meninggal atau cacat total tetap akibat kecelakaan kerja) tanpa syarat masa iuran. Beasiswa berakhir saat anak berusia 23 tahun, menikah, atau bekerja.</div>
+      </section>
+
+      <footer>
+        Simulasi ini bersifat perkiraan dan bukan angka resmi. Acuan: PP 44/2015 jo. PP 82/2019 (JKK & JKM), PP 46/2015 jo. PP 60/2015 (JHT), Permenaker 5/2021, program diskon iuran BPU 2026, dan hasil pengembangan JHT 2025 sebesar 5,51%. Nilai klaim final ditetapkan BPJS Ketenagakerjaan sesuai data kepesertaan dan dokumen pendukung.
+      </footer>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const $=id=>document.getElementById(id);
+  const rp=n=>'Rp'+Math.round(n).toLocaleString('id-ID');
+  const rpShort=n=>{if(n>=1e9)return (n/1e9).toLocaleString('id-ID',{maximumFractionDigits:1})+' M';if(n>=1e6)return (n/1e6).toLocaleString('id-ID',{maximumFractionDigits:0})+' jt';return Math.round(n/1e3)+' rb'};
+  const parse=s=>Number(String(s).replace(/[^\d]/g,''))||0;
+  const fmtIn=el=>{const n=parse(el.value);el.value=n?n.toLocaleString('id-ID'):'0'};
+  const num=(id,d)=>{const v=parseFloat($(id).value);return isFinite(v)?v:d};
+  let disabilityPct=10;
+
+  function niceStep(max,ticks){const raw=max/ticks;const p=Math.pow(10,Math.floor(Math.log10(raw)));const f=raw/p;return (f<=1?1:f<=2?2:f<=2.5?2.5:f<=5?5:10)*p}
+
+  function drawChart(rows,age){
+    const n=rows.length,W=Math.max(640,n*20+90),H=280,L=64,R=14,T=14,B=34;
+    const max=Math.max(...rows.map(r=>r.bal),1);const step=niceStep(max,4);const top=Math.ceil(max/step)*step;
+    const y=v=>T+(H-T-B)*(1-v/top);const bw=(W-L-R)/n;const w=Math.max(4,bw*0.68);
+    let s=`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Grafik proyeksi saldo JHT per tahun" style="display:block;max-width:none;font-family:var(--mono)">`;
+    for(let v=0;v<=top+1;v+=step){s+=`<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)"/><text x="${L-8}" y="${y(v)+4}" text-anchor="end" font-size="11" fill="var(--muted)">${v?rpShort(v):'0'}</text>`}
+    rows.forEach((r,i)=>{const x=L+i*bw+(bw-w)/2;const c=r.contribAll,d=Math.max(0,r.bal-c);
+      s+=`<g><title>Usia ${r.age}: saldo ${rp(r.bal)} (iuran ${rp(c)}, hasil ${rp(d)})</title><rect class="bar" x="${x}" y="${y(c)}" width="${w}" height="${y(0)-y(c)}" fill="var(--accent)"/><rect class="bar" x="${x}" y="${y(c+d)}" width="${w}" height="${y(c)-y(c+d)}" fill="var(--gold)"/></g>`;
+      if(i===n-1||(r.age%5===0&&n-1-i>2)||n<=12)s+=`<text x="${x+w/2}" y="${H-B+18}" text-anchor="middle" font-size="11" fill="var(--muted)">${r.age}</text>`});
+    const last=rows[n-1];const lx=L+(n-1)*bw+bw/2;
+    s+=`<circle cx="${lx}" cy="${y(last.bal)}" r="4" fill="var(--ink)"/>`;
+    s+=`<text x="${L}" y="${H-4}" font-size="10.5" fill="var(--muted)">Usia</text></svg>`;
+    $('chart').innerHTML=s;
+  }
+
+  function calc(){
+    const inc=Math.max(1e6,parse($('inc').value));
+    const jhtOn=$('jhtOn').checked, disc=$('disc').checked;
+    const age=Math.round(num('age',30)); let claim=Math.round(num('claim',56)); if(claim<=age)claim=age+1;
+    const r=num('ret',5.51)/100, g=num('grow',0)/100, saldo0=parse($('saldo').value);
+    const f=disc?0.5:1;
+    const jkk=0.01*inc*f, jkm=6800*f, jht=jhtOn?0.02*inc:0, total=jkk+jkm+jht;
+
+    // Iuran
+    const rows=[['Jaminan Kecelakaan Kerja','1% × penghasilan'+(disc?' · diskon 50%':''),jkk],['Jaminan Kematian','Rp6.800 tetap'+(disc?' · diskon 50%':''),jkm]];
+    if(jhtOn)rows.push(['Jaminan Hari Tua','2% × penghasilan',jht]);
+    $('iuranBody').innerHTML=rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td class="num">${rp(r[2])}</td><td class="num">${rp(r[2]*12)}</td></tr>`).join('')+
+      `<tr class="total"><td>Total</td><td></td><td class="num">${rp(total)}</td><td class="num">${rp(total*12)}</td></tr>`;
+    $('progTag').textContent=jhtOn?'JKK · JKM · JHT':'JKK · JKM';
+    $('tIuran').textContent=rp(total);
+    $('tIuranS').textContent=disc?'Normal '+rp(0.01*inc+6800+jht)+' setelah Des 2026':'Tanpa diskon';
+
+    // JHT
+    $('jhtBox').hidden=!jhtOn; $('jhtEmpty').hidden=jhtOn;
+    if(jhtOn){
+      const years=claim-age, rm=Math.pow(1+r,1/12)-1; let bal=saldo0, contrib=0; const yr=[];
+      for(let y=1;y<=years;y++){const c=0.02*inc*Math.pow(1+g,y-1);for(let m=0;m<12;m++){bal=bal*(1+rm)+c;contrib+=c}
+        yr.push({y,age:age+y,c,contrib,contribAll:contrib+saldo0,bal})}
+      const last=yr[yr.length-1], dev=last.bal-last.contribAll;
+      $('tJhtK').textContent='Saldo JHT usia '+claim; $('tJht').textContent=rp(last.bal); $('tJhtS').textContent=years+' tahun iuran · '+(r*100).toLocaleString('id-ID')+'%/th';
+      $('jhtSplit').innerHTML=`<div><div class="k">Total iuran${saldo0?' + saldo awal':''}</div><div class="v">${rp(last.contribAll)}</div></div><div><div class="k">Hasil pengembangan</div><div class="v">${rp(dev)}</div></div><div><div class="k">Saldo saat usia ${claim}</div><div class="v">${rp(last.bal)}</div></div>`;
+      $('yearBody').innerHTML=yr.map(o=>`<tr><td>${o.y}</td><td>${o.age}</td><td class="num">${rp(o.c)}</td><td class="num">${rp(o.contribAll)}</td><td class="num">${rp(o.bal-o.contribAll)}</td><td class="num">${rp(o.bal)}</td></tr>`).join('');
+      drawChart(yr,age);
+    }else{$('tJhtK').textContent='Saldo JHT';$('tJht').textContent='Tidak ikut';$('tJhtS').textContent='Aktifkan JHT untuk proyeksi'}
+
+    // JKK
+    const death=48*inc+12e6+10e6;
+    $('tJkk').textContent=rp(death);
+    const p=Math.min(100,Math.max(0,disabilityPct));
+    $('jkkBody').innerHTML=[
+      ['Perawatan & pengobatan','Sesuai kebutuhan medis, tanpa batas biaya','Tanpa batas'],
+      ['Santunan sementara tidak mampu bekerja','100% penghasilan × 12 bulan pertama, lalu 50% sampai sembuh',rp(inc)+'/bln<small>lalu '+rp(inc*.5)+'/bln</small>'],
+      ['Cacat sebagian anatomis',`% tabel cacat × 80 × penghasilan <span class="inline-in"><label for="dp" class="hint">contoh</label><input type="number" id="dp" min="0" max="100" value="${p}">%</span>`,rp(p/100*80*inc)],
+      ['Cacat total tetap','70% × 80 × penghasilan (56×)',rp(56*inc)],
+      ['Meninggal dunia','48 × penghasilan + santunan berkala Rp12 jt + biaya pemakaman Rp10 jt',rp(death)],
+      ['Biaya transportasi','Darat Rp5 jt · laut Rp2 jt · udara Rp10 jt','Maks. Rp10.000.000'],
+      ['Beasiswa 2 anak','Jika meninggal atau cacat total tetap','Maks. Rp174.000.000']
+    ].map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td class="num">${r[2]}</td></tr>`).join('');
+    const dp=$('dp'); dp.addEventListener('input',()=>{disabilityPct=parseFloat(dp.value)||0;const cell=dp.closest('tr').lastElementChild;cell.textContent=rp(Math.min(100,Math.max(0,disabilityPct))/100*80*inc)});
+  }
+
+  ['inc','saldo'].forEach(id=>{const el=$(id);el.addEventListener('input',calc);el.addEventListener('blur',()=>{fmtIn(el);calc()})});
+  ['jhtOn','disc','age','claim','ret','grow'].forEach(id=>$(id).addEventListener('input',calc));
+  $('chips').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;$('inc').value=Number(b.dataset.v).toLocaleString('id-ID');calc()});
+  $('f').addEventListener('submit',e=>e.preventDefault());
+  calc();
+})();
+</script>
+
+</body>
+</html>
