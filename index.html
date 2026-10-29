@@ -8,95 +8,143 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap">
 <style>
-/* Layout: panel isian kiri (sticky di desktop), hasil kanan; satu kolom di ponsel */
+/* Layout: band header biru-hijau selebar layar; di bawahnya panel isian kiri (sticky) + hasil kanan; satu kolom di ponsel */
 :root{
-  --bg:#F3F6F4; --surface:#FFFFFF; --ink:#13231E; --muted:#5A6B65; --line:#DCE4E0;
-  --accent:#0B7A55; --accent-soft:#E2F2EA; --gold:#C9822A; --gold-soft:#F8EBD8; --warn:#9A5B00;
+  --bg:#F2F6FB; --surface:#FFFFFF; --ink:#0F2742; --muted:#5A6B82; --line:#DCE5F0;
+  --blue:#0B5CAB; --blue-deep:#073F78; --blue-soft:#E5EFFA;
+  --green:#0E9A4B; --green-soft:#E2F4E9; --gold:#F2A900; --on-brand:#FFFFFF;
   --sans:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#0E1613; --surface:#15201C; --ink:#E4EDE9; --muted:#97A6A0; --line:#26332E;
-  --accent:#41C08E; --accent-soft:#163A2C; --gold:#E3A653; --gold-soft:#3A2C17; --warn:#E3A653; color-scheme:dark}}
+  --bg:#0A1320; --surface:#111D2C; --ink:#E5EDF7; --muted:#9AABC0; --line:#22324A;
+  --blue:#5AA6EE; --blue-deep:#0B3765; --blue-soft:#14304F; --green:#3FCB7A; --green-soft:#123623; --gold:#F5BD3A; --on-brand:#FFFFFF; color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#0E1613; --surface:#15201C; --ink:#E4EDE9; --muted:#97A6A0; --line:#26332E;
-  --accent:#41C08E; --accent-soft:#163A2C; --gold:#E3A653; --gold-soft:#3A2C17; --warn:#E3A653; color-scheme:dark}
+  --bg:#0A1320; --surface:#111D2C; --ink:#E5EDF7; --muted:#9AABC0; --line:#22324A;
+  --blue:#5AA6EE; --blue-deep:#0B3765; --blue-soft:#14304F; --green:#3FCB7A; --green-soft:#123623; --gold:#F5BD3A; --on-brand:#FFFFFF; color-scheme:dark}
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55;
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 48px}
-.wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:24px}
-header h1{font-size:clamp(1.6rem,3.4vw,2.3rem);font-weight:800;letter-spacing:-.02em;margin:0;text-wrap:balance}
-header p{margin:6px 0 0;color:var(--muted);max-width:68ch}
-.eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55}
+.gut{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1180px;margin:0 auto}
+.ico{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* Header band */
+.band{background:var(--blue-deep);color:var(--on-brand);border-bottom:5px solid var(--green);padding-block:26px 30px}
+.band .wrap{display:flex;flex-wrap:wrap;gap:14px 24px;align-items:flex-end;justify-content:space-between}
+.band .eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
+.band h1{font-size:clamp(1.6rem,3.4vw,2.4rem);font-weight:800;letter-spacing:-.02em;margin:4px 0 0;text-wrap:balance}
+.band p{margin:6px 0 0;max-width:64ch;opacity:.86}
+.pill{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.35);border-radius:99px;padding:6px 12px;font-size:.78rem;font-weight:600;white-space:nowrap}
+.pill i{width:8px;height:8px;border-radius:50%;background:var(--gold)}
+
+main{padding-block:24px 48px}
 .grid{display:grid;grid-template-columns:340px minmax(0,1fr);gap:24px;align-items:start}
 @media (max-width:880px){.grid{grid-template-columns:minmax(0,1fr)}}
-.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:16px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px)}
+
+/* Panel isian */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:16px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);box-shadow:0 6px 20px -14px rgba(7,63,120,.45)}
 @media (max-width:880px){.panel{position:static}}
+.head{display:flex;align-items:center;gap:10px}
+.badge{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--blue-soft);color:var(--blue);flex:none}
+.badge.g{background:var(--green-soft);color:var(--green)}
 .panel h2{font-size:1rem;margin:0}
 .field{display:flex;flex-direction:column;gap:6px}
 .field label,.lbl{font-size:.82rem;font-weight:600}
 .hint{font-size:.76rem;color:var(--muted)}
-input[type=number],input[type=text]{width:100%;font:500 1rem var(--mono);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:9px 11px}
-input:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+input[type=number],input[type=text]{width:100%;font:500 1rem var(--mono);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 11px}
+input:focus{border-color:var(--blue)}
+input:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 .prefix{position:relative}.prefix span{position:absolute;left:11px;top:50%;transform:translateY(-50%);font:500 .9rem var(--mono);color:var(--muted)}
 .prefix input{padding-left:36px}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
-.chips button{font:600 .76rem var(--sans);border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:99px;padding:4px 10px;cursor:pointer}
-.chips button:hover{border-color:var(--accent);color:var(--accent)}
+.chips button{font:600 .76rem var(--sans);border:1px solid var(--line);background:var(--surface);color:var(--blue);border-radius:99px;padding:4px 11px;cursor:pointer}
+.chips button:hover,.chips button[aria-pressed="true"]{background:var(--blue);border-color:var(--blue);color:var(--on-brand)}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.toggle{display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:.86rem}
-.toggle input{margin-top:3px;accent-color:var(--accent);width:16px;height:16px}
+.toggle{display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:.86rem;padding:10px 12px;border-radius:12px;background:var(--bg)}
+.toggle input{margin-top:3px;accent-color:var(--green);width:16px;height:16px}
 .toggle b{display:block;font-weight:600}
-.results{display:flex;flex-direction:column;gap:20px;min-width:0}
+
+/* Hasil */
+.results{display:flex;flex-direction:column;gap:18px;min-width:0}
 .tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-@media (max-width:1060px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
-.tile{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:4px;min-width:0}
-.tile .k{font-size:.74rem;color:var(--muted);font-weight:600}
-.tile .v{font:600 clamp(1.05rem,2.1vw,1.35rem) var(--mono);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
-.tile .s{font-size:.74rem;color:var(--muted)}
-.tile.hero{background:var(--accent);border-color:var(--accent);color:var(--surface)}
-.tile.hero .k,.tile.hero .s{color:var(--surface);opacity:.85}
-section.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px;min-width:0}
-.card h2{margin:0;font-size:1.15rem;font-weight:700;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
-.tag{font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:99px;background:var(--accent-soft);color:var(--accent)}
-.tag.gold{background:var(--gold-soft);color:var(--warn)}
+@media (max-width:1100px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.tile .top{display:flex;align-items:center;gap:8px;color:var(--blue)}
+.tile .top.g{color:var(--green)}
+.tile .k{font-size:.74rem;color:var(--muted);font-weight:600;line-height:1.3}
+.tile .v{font:600 clamp(1rem,1.5vw,1.2rem) var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.tile .s{font-size:.74rem;color:var(--muted);line-height:1.35}
+.tile.hero{background:var(--blue);border-color:var(--blue);color:var(--on-brand)}
+.tile.hero .top,.tile.hero .k,.tile.hero .s{color:var(--on-brand)}
+.tile.hero .k,.tile.hero .s{opacity:.88}
+
+.insight{display:flex;gap:12px;align-items:flex-start;background:var(--green-soft);border-radius:14px;padding:14px 16px;font-size:.92rem}
+.insight .ico{color:var(--green);margin-top:2px}
+.insight b{font-family:var(--mono);font-weight:600}
+
+section.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.card h2{margin:0;font-size:1.12rem;font-weight:700}
+.card .head{flex-wrap:wrap}
+.card .head .grow{flex:1;min-width:0}
+.card .head p{margin:0;font-size:.8rem;color:var(--muted)}
+.tag{font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:99px;background:var(--blue-soft);color:var(--blue)}
+.tag.g{background:var(--green-soft);color:var(--green)}
 table{width:100%;border-collapse:collapse;font-size:.88rem}
 th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
-th{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700}
+thead th{font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);font-weight:700;background:var(--blue-soft);border-bottom:none}
+thead th:first-child{border-radius:8px 0 0 8px}thead th:last-child{border-radius:0 8px 8px 0}
 td.num,th.num{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
 td small{display:block;color:var(--muted);font-size:.76rem}
-tr.total td{font-weight:700;border-bottom:none}
+tr.total td{font-weight:700;border-bottom:none;color:var(--blue)}
 .scroll{overflow-x:auto}
-.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.8rem;color:var(--muted)}
-.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:middle}
+
 .split{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 @media (max-width:620px){.split{grid-template-columns:minmax(0,1fr)}}
-.split div{border-left:3px solid var(--line);padding:2px 0 2px 12px}
-.split div:nth-child(1){border-color:var(--accent)}.split div:nth-child(2){border-color:var(--gold)}
+.split>div{background:var(--bg);border-radius:12px;padding:10px 12px}
 .split .k{font-size:.74rem;color:var(--muted);font-weight:600}
 .split .v{font:600 1.05rem var(--mono);font-variant-numeric:tabular-nums}
-details summary{cursor:pointer;font-weight:600;font-size:.86rem;color:var(--accent)}
+.split>div:nth-child(1) .v{color:var(--blue)}.split>div:nth-child(2) .v{color:var(--green)}
+.progress{display:flex;flex-direction:column;gap:6px}
+.bar-track{height:12px;border-radius:99px;background:var(--line);overflow:hidden;display:flex}
+.bar-track span{height:100%}
+.bar-meta{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:.78rem;color:var(--muted)}
+.bar-meta i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+details summary{cursor:pointer;font-weight:600;font-size:.86rem;color:var(--blue)}
 .note{font-size:.8rem;color:var(--muted);border-top:1px dashed var(--line);padding-top:12px}
-.note ul{margin:6px 0 0;padding-left:18px}
-.empty{color:var(--muted);font-size:.9rem;padding:18px;border:1px dashed var(--line);border-radius:10px;text-align:center}
+.empty{color:var(--muted);font-size:.9rem;padding:18px;border:1px dashed var(--line);border-radius:12px;text-align:center}
 .inline-in{display:inline-flex;align-items:center;gap:6px}
 .inline-in input{width:64px;padding:4px 6px;font-size:.85rem}
 footer{font-size:.76rem;color:var(--muted);max-width:90ch}
-@media (prefers-reduced-motion:no-preference){.bar{transition:height .25s,y .25s}}
+@media (prefers-reduced-motion:no-preference){.bar{transition:height .25s,y .25s}.bar-track span{transition:width .3s}}
 </style>
 
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <div class="eyebrow">Peserta Bukan Penerima Upah · BPJS Ketenagakerjaan</div>
-    <h1>Simulasi Manfaat BPU</h1>
-    <p>Hitung iuran bulanan, proyeksi saldo Jaminan Hari Tua, serta perkiraan manfaat Jaminan Kecelakaan Kerja dan Jaminan Kematian berdasarkan penghasilan yang dilaporkan.</p>
-  </header>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+  <symbol id="i-receipt" viewBox="0 0 24 24"><path d="M5 2v20l2.3-1.5L9.7 22l2.3-1.5 2.3 1.5 2.4-1.5L19 22V2l-2.3 1.5L14.3 2 12 3.5 9.7 2 7.3 3.5Z"/><path d="M9 8h6M9 12h6M9 16h4"/></symbol>
+  <symbol id="i-coins" viewBox="0 0 24 24"><circle cx="9" cy="9" r="6"/><path d="M18.1 10.4A6 6 0 1 1 10.4 18"/><path d="M8 7h1.5v4"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="M12 8v6M9 11h6"/></symbol>
+  <symbol id="i-umbrella" viewBox="0 0 24 24"><path d="M22 12a10 10 0 0 0-20 0Z"/><path d="M12 12v7a2 2 0 0 0 4 0"/><path d="M12 2v1"/></symbol>
+  <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 18h6M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2Z"/></symbol>
+  <symbol id="i-cap" viewBox="0 0 24 24"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></symbol>
+</svg>
 
-  <div class="grid">
+<header class="band gut">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow">Peserta Bukan Penerima Upah · BPJS Ketenagakerjaan</div>
+      <h1>Simulasi Manfaat BPU</h1>
+      <p>Hitung iuran bulanan, proyeksi saldo Jaminan Hari Tua, serta perkiraan manfaat Jaminan Kecelakaan Kerja dan Jaminan Kematian berdasarkan penghasilan yang dilaporkan.</p>
+    </div>
+    <span class="pill"><i></i>Simulasi, bukan kanal resmi</span>
+  </div>
+</header>
+
+<main class="gut">
+  <div class="wrap grid">
     <form class="panel" id="f" autocomplete="off">
-      <h2>Data peserta</h2>
+      <div class="head"><span class="badge"><svg class="ico"><use href="#i-user"/></svg></span><h2>Data peserta</h2></div>
       <div class="field">
         <label for="inc">Penghasilan dilaporkan / bulan</label>
         <div class="prefix"><span>Rp</span><input type="text" inputmode="numeric" id="inc" value="2.000.000"></div>
@@ -107,7 +155,7 @@ footer{font-size:.76rem;color:var(--muted);max-width:90ch}
         <div class="hint">Minimal Rp1.000.000.</div>
       </div>
       <label class="toggle"><input type="checkbox" id="jhtOn" checked><span><b>Ikut program JHT</b><span class="hint">JKK dan JKM wajib. JHT pilihan.</span></span></label>
-      <label class="toggle"><input type="checkbox" id="disc" checked><span><b>Diskon 50% iuran JKK & JKM</b><span class="hint">Berlaku April–Desember 2026. Manfaat tidak berkurang.</span></span></label>
+      <label class="toggle"><input type="checkbox" id="disc" checked><span><b>Diskon 50% iuran JKK &amp; JKM</b><span class="hint">Berlaku April–Desember 2026. Manfaat tidak berkurang.</span></span></label>
       <div class="row2">
         <div class="field"><label for="age">Usia sekarang</label><input type="number" id="age" min="15" max="70" value="30"></div>
         <div class="field"><label for="claim">Usia klaim JHT</label><input type="number" id="claim" min="16" max="80" value="56"></div>
@@ -124,14 +172,16 @@ footer{font-size:.76rem;color:var(--muted);max-width:90ch}
 
     <div class="results">
       <div class="tiles">
-        <div class="tile hero"><span class="k">Iuran per bulan</span><span class="v" id="tIuran">–</span><span class="s" id="tIuranS"></span></div>
-        <div class="tile"><span class="k" id="tJhtK">Saldo JHT</span><span class="v" id="tJht">–</span><span class="s" id="tJhtS"></span></div>
-        <div class="tile"><span class="k">Meninggal akibat kecelakaan kerja</span><span class="v" id="tJkk">–</span><span class="s">+ beasiswa 2 anak s.d. Rp174 jt</span></div>
-        <div class="tile"><span class="k">Meninggal bukan kecelakaan kerja</span><span class="v">Rp42.000.000</span><span class="s">+ beasiswa jika iuran ≥ 3 tahun</span></div>
+        <div class="tile hero"><span class="top"><svg class="ico"><use href="#i-receipt"/></svg><span class="k">Iuran per bulan</span></span><span class="v" id="tIuran">–</span><span class="s" id="tIuranS"></span></div>
+        <div class="tile"><span class="top g"><svg class="ico"><use href="#i-coins"/></svg><span class="k" id="tJhtK">Saldo JHT</span></span><span class="v" id="tJht">–</span><span class="s" id="tJhtS"></span></div>
+        <div class="tile"><span class="top"><svg class="ico"><use href="#i-shield"/></svg><span class="k">Meninggal akibat kecelakaan kerja</span></span><span class="v" id="tJkk">–</span><span class="s">+ beasiswa 2 anak s.d. Rp174 jt</span></div>
+        <div class="tile"><span class="top"><svg class="ico"><use href="#i-umbrella"/></svg><span class="k">Meninggal bukan kecelakaan kerja</span></span><span class="v">Rp42.000.000</span><span class="s">+ beasiswa jika iuran ≥ 3 tahun</span></div>
       </div>
 
+      <div class="insight"><svg class="ico"><use href="#i-bulb"/></svg><div id="insight"></div></div>
+
       <section class="card">
-        <h2>Rincian iuran <span class="tag" id="progTag">JKK · JKM · JHT</span></h2>
+        <div class="head"><span class="badge"><svg class="ico"><use href="#i-receipt"/></svg></span><div class="grow"><h2>Rincian iuran</h2><p>Dibayar setiap bulan sesuai penghasilan yang dilaporkan</p></div><span class="tag" id="progTag">JKK · JKM · JHT</span></div>
         <div class="scroll"><table>
           <thead><tr><th>Program</th><th>Dasar</th><th class="num">Per bulan</th><th class="num">Per tahun</th></tr></thead>
           <tbody id="iuranBody"></tbody>
@@ -139,10 +189,13 @@ footer{font-size:.76rem;color:var(--muted);max-width:90ch}
       </section>
 
       <section class="card">
-        <h2>Jaminan Hari Tua <span class="tag gold">Tabungan</span></h2>
-        <div id="jhtBox">
+        <div class="head"><span class="badge g"><svg class="ico"><use href="#i-coins"/></svg></span><div class="grow"><h2>Jaminan Hari Tua</h2><p>Tabungan hari tua: akumulasi iuran plus hasil pengembangan</p></div><span class="tag g">Tabungan</span></div>
+        <div id="jhtBox" style="display:flex;flex-direction:column;gap:14px">
           <div class="split" id="jhtSplit"></div>
-          <div class="legend" style="margin-top:14px"><span><i style="background:var(--accent)"></i>Akumulasi iuran</span><span><i style="background:var(--gold)"></i>Hasil pengembangan</span></div>
+          <div class="progress">
+            <div class="bar-track" role="img" id="mixBar"><span id="mixA" style="background:var(--blue)"></span><span id="mixB" style="background:var(--green)"></span></div>
+            <div class="bar-meta"><span><i style="background:var(--blue)"></i>Akumulasi iuran <b id="mixAp"></b></span><span><i style="background:var(--green)"></i>Hasil pengembangan <b id="mixBp"></b></span></div>
+          </div>
           <div class="scroll" id="chart"></div>
           <details><summary>Tabel per tahun</summary>
             <div class="scroll"><table>
@@ -156,7 +209,7 @@ footer{font-size:.76rem;color:var(--muted);max-width:90ch}
       </section>
 
       <section class="card">
-        <h2>Jaminan Kecelakaan Kerja <span class="tag">Risiko kerja</span></h2>
+        <div class="head"><span class="badge"><svg class="ico"><use href="#i-shield"/></svg></span><div class="grow"><h2>Jaminan Kecelakaan Kerja</h2><p>Perlindungan risiko kecelakaan kerja dan penyakit akibat kerja</p></div><span class="tag">Risiko kerja</span></div>
         <div class="scroll"><table>
           <thead><tr><th>Manfaat</th><th>Ketentuan</th><th class="num">Estimasi</th></tr></thead>
           <tbody id="jkkBody"></tbody>
@@ -165,7 +218,7 @@ footer{font-size:.76rem;color:var(--muted);max-width:90ch}
       </section>
 
       <section class="card">
-        <h2>Jaminan Kematian <span class="tag">Ahli waris</span></h2>
+        <div class="head"><span class="badge"><svg class="ico"><use href="#i-umbrella"/></svg></span><div class="grow"><h2>Jaminan Kematian</h2><p>Santunan untuk ahli waris jika peserta meninggal bukan karena kecelakaan kerja</p></div><span class="tag">Ahli waris</span></div>
         <div class="scroll"><table>
           <thead><tr><th>Manfaat</th><th>Ketentuan</th><th class="num">Nilai</th></tr></thead>
           <tbody>
@@ -175,7 +228,7 @@ footer{font-size:.76rem;color:var(--muted);max-width:90ch}
             <tr class="total"><td>Total uang tunai</td><td></td><td class="num">Rp42.000.000</td></tr>
           </tbody>
         </table></div>
-        <div class="lbl" style="margin-top:4px">Beasiswa pendidikan (maks. 2 anak)</div>
+        <div class="head" style="margin-top:4px"><span class="badge g"><svg class="ico"><use href="#i-cap"/></svg></span><div class="lbl">Beasiswa pendidikan (maks. 2 anak)</div></div>
         <div class="scroll"><table>
           <thead><tr><th>Jenjang</th><th class="num">Per anak / tahun</th><th class="num">Maks. tahun</th><th class="num">Maks. per anak</th></tr></thead>
           <tbody>
@@ -190,17 +243,18 @@ footer{font-size:.76rem;color:var(--muted);max-width:90ch}
       </section>
 
       <footer>
-        Simulasi ini bersifat perkiraan dan bukan angka resmi. Acuan: PP 44/2015 jo. PP 82/2019 (JKK & JKM), PP 46/2015 jo. PP 60/2015 (JHT), Permenaker 5/2021, program diskon iuran BPU 2026, dan hasil pengembangan JHT 2025 sebesar 5,51%. Nilai klaim final ditetapkan BPJS Ketenagakerjaan sesuai data kepesertaan dan dokumen pendukung.
+        Simulasi ini bersifat perkiraan dan bukan angka resmi. Acuan: PP 44/2015 jo. PP 82/2019 (JKK &amp; JKM), PP 46/2015 jo. PP 60/2015 (JHT), Permenaker 5/2021, program diskon iuran BPU 2026, dan hasil pengembangan JHT 2025 sebesar 5,51%. Nilai klaim final ditetapkan BPJS Ketenagakerjaan sesuai data kepesertaan dan dokumen pendukung.
       </footer>
     </div>
   </div>
-</div>
+</main>
 
 <script>
 (function(){
   const $=id=>document.getElementById(id);
   const rp=n=>'Rp'+Math.round(n).toLocaleString('id-ID');
   const rpShort=n=>{if(n>=1e9)return (n/1e9).toLocaleString('id-ID',{maximumFractionDigits:1})+' M';if(n>=1e6)return (n/1e6).toLocaleString('id-ID',{maximumFractionDigits:0})+' jt';return Math.round(n/1e3)+' rb'};
+  const jt=n=>'Rp'+(n/1e6).toLocaleString('id-ID',{maximumFractionDigits:1})+' jt';
   const parse=s=>Number(String(s).replace(/[^\d]/g,''))||0;
   const fmtIn=el=>{const n=parse(el.value);el.value=n?n.toLocaleString('id-ID'):'0'};
   const num=(id,d)=>{const v=parseFloat($(id).value);return isFinite(v)?v:d};
@@ -208,17 +262,17 @@ footer{font-size:.76rem;color:var(--muted);max-width:90ch}
 
   function niceStep(max,ticks){const raw=max/ticks;const p=Math.pow(10,Math.floor(Math.log10(raw)));const f=raw/p;return (f<=1?1:f<=2?2:f<=2.5?2.5:f<=5?5:10)*p}
 
-  function drawChart(rows,age){
+  function drawChart(rows){
     const n=rows.length,W=Math.max(640,n*20+90),H=280,L=64,R=14,T=14,B=34;
     const max=Math.max(...rows.map(r=>r.bal),1);const step=niceStep(max,4);const top=Math.ceil(max/step)*step;
-    const y=v=>T+(H-T-B)*(1-v/top);const bw=(W-L-R)/n;const w=Math.max(4,bw*0.68);
+    const y=v=>T+(H-T-B)*(1-v/top);const bw=(W-L-R)/n;const w=Math.max(4,bw*0.66);
     let s=`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Grafik proyeksi saldo JHT per tahun" style="display:block;max-width:none;font-family:var(--mono)">`;
     for(let v=0;v<=top+1;v+=step){s+=`<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)"/><text x="${L-8}" y="${y(v)+4}" text-anchor="end" font-size="11" fill="var(--muted)">${v?rpShort(v):'0'}</text>`}
     rows.forEach((r,i)=>{const x=L+i*bw+(bw-w)/2;const c=r.contribAll,d=Math.max(0,r.bal-c);
-      s+=`<g><title>Usia ${r.age}: saldo ${rp(r.bal)} (iuran ${rp(c)}, hasil ${rp(d)})</title><rect class="bar" x="${x}" y="${y(c)}" width="${w}" height="${y(0)-y(c)}" fill="var(--accent)"/><rect class="bar" x="${x}" y="${y(c+d)}" width="${w}" height="${y(c)-y(c+d)}" fill="var(--gold)"/></g>`;
+      s+=`<g><title>Usia ${r.age}: saldo ${rp(r.bal)} (iuran ${rp(c)}, hasil ${rp(d)})</title><rect class="bar" x="${x}" y="${y(c)}" width="${w}" height="${y(0)-y(c)}" rx="2" fill="var(--blue)"/><rect class="bar" x="${x}" y="${y(c+d)}" width="${w}" height="${y(c)-y(c+d)}" rx="2" fill="var(--green)"/></g>`;
       if(i===n-1||(r.age%5===0&&n-1-i>2)||n<=12)s+=`<text x="${x+w/2}" y="${H-B+18}" text-anchor="middle" font-size="11" fill="var(--muted)">${r.age}</text>`});
     const last=rows[n-1];const lx=L+(n-1)*bw+bw/2;
-    s+=`<circle cx="${lx}" cy="${y(last.bal)}" r="4" fill="var(--ink)"/>`;
+    s+=`<circle cx="${lx}" cy="${y(last.bal)}" r="5" fill="var(--gold)" stroke="var(--surface)" stroke-width="2"/>`;
     s+=`<text x="${L}" y="${H-4}" font-size="10.5" fill="var(--muted)">Usia</text></svg>`;
     $('chart').innerHTML=s;
   }
@@ -230,6 +284,7 @@ footer{font-size:.76rem;color:var(--muted);max-width:90ch}
     const r=num('ret',5.51)/100, g=num('grow',0)/100, saldo0=parse($('saldo').value);
     const f=disc?0.5:1;
     const jkk=0.01*inc*f, jkm=6800*f, jht=jhtOn?0.02*inc:0, total=jkk+jkm+jht;
+    document.querySelectorAll('#chips button').forEach(b=>b.setAttribute('aria-pressed',Number(b.dataset.v)===inc?'true':'false'));
 
     // Iuran
     const rows=[['Jaminan Kecelakaan Kerja','1% × penghasilan'+(disc?' · diskon 50%':''),jkk],['Jaminan Kematian','Rp6.800 tetap'+(disc?' · diskon 50%':''),jkm]];
@@ -240,6 +295,9 @@ footer{font-size:.76rem;color:var(--muted);max-width:90ch}
     $('tIuran').textContent=rp(total);
     $('tIuranS').textContent=disc?'Normal '+rp(0.01*inc+6800+jht)+' setelah Des 2026':'Tanpa diskon';
 
+    const death=48*inc+12e6+10e6;
+    let jhtText='';
+
     // JHT
     $('jhtBox').hidden=!jhtOn; $('jhtEmpty').hidden=jhtOn;
     if(jhtOn){
@@ -247,18 +305,24 @@ footer{font-size:.76rem;color:var(--muted);max-width:90ch}
       for(let y=1;y<=years;y++){const c=0.02*inc*Math.pow(1+g,y-1);for(let m=0;m<12;m++){bal=bal*(1+rm)+c;contrib+=c}
         yr.push({y,age:age+y,c,contrib,contribAll:contrib+saldo0,bal})}
       const last=yr[yr.length-1], dev=last.bal-last.contribAll;
+      const pa=last.bal>0?last.contribAll/last.bal*100:100, pb=100-pa;
       $('tJhtK').textContent='Saldo JHT usia '+claim; $('tJht').textContent=rp(last.bal); $('tJhtS').textContent=years+' tahun iuran · '+(r*100).toLocaleString('id-ID')+'%/th';
       $('jhtSplit').innerHTML=`<div><div class="k">Total iuran${saldo0?' + saldo awal':''}</div><div class="v">${rp(last.contribAll)}</div></div><div><div class="k">Hasil pengembangan</div><div class="v">${rp(dev)}</div></div><div><div class="k">Saldo saat usia ${claim}</div><div class="v">${rp(last.bal)}</div></div>`;
+      $('mixA').style.width=pa+'%'; $('mixB').style.width=pb+'%';
+      $('mixAp').textContent=pa.toFixed(0)+'%'; $('mixBp').textContent=pb.toFixed(0)+'%';
+      $('mixBar').setAttribute('aria-label','Komposisi saldo: '+pa.toFixed(0)+'% iuran, '+pb.toFixed(0)+'% hasil pengembangan');
       $('yearBody').innerHTML=yr.map(o=>`<tr><td>${o.y}</td><td>${o.age}</td><td class="num">${rp(o.c)}</td><td class="num">${rp(o.contribAll)}</td><td class="num">${rp(o.bal-o.contribAll)}</td><td class="num">${rp(o.bal)}</td></tr>`).join('');
-      drawChart(yr,age);
+      drawChart(yr);
+      jhtText=` Saldo JHT di usia ${claim} diperkirakan <b>${jt(last.bal)}</b>, dengan <b>${pb.toFixed(0)}%</b> berasal dari hasil pengembangan.`;
     }else{$('tJhtK').textContent='Saldo JHT';$('tJht').textContent='Tidak ikut';$('tJhtS').textContent='Aktifkan JHT untuk proyeksi'}
 
+    $('insight').innerHTML=`Dengan iuran <b>${rp(total)}</b> per bulan, keluarga terlindungi hingga <b>${jt(death)}</b> jika terjadi kecelakaan kerja fatal dan <b>Rp42 jt</b> untuk kematian biasa, ditambah beasiswa 2 anak s.d. <b>Rp174 jt</b>.`+jhtText;
+
     // JKK
-    const death=48*inc+12e6+10e6;
     $('tJkk').textContent=rp(death);
     const p=Math.min(100,Math.max(0,disabilityPct));
     $('jkkBody').innerHTML=[
-      ['Perawatan & pengobatan','Sesuai kebutuhan medis, tanpa batas biaya','Tanpa batas'],
+      ['Perawatan &amp; pengobatan','Sesuai kebutuhan medis, tanpa batas biaya','Tanpa batas'],
       ['Santunan sementara tidak mampu bekerja','100% penghasilan × 12 bulan pertama, lalu 50% sampai sembuh',rp(inc)+'/bln<small>lalu '+rp(inc*.5)+'/bln</small>'],
       ['Cacat sebagian anatomis',`% tabel cacat × 80 × penghasilan <span class="inline-in"><label for="dp" class="hint">contoh</label><input type="number" id="dp" min="0" max="100" value="${p}">%</span>`,rp(p/100*80*inc)],
       ['Cacat total tetap','70% × 80 × penghasilan (56×)',rp(56*inc)],
