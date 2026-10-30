@@ -116,6 +116,43 @@ details summary{cursor:pointer;font-weight:600;font-size:.86rem;color:var(--blue
 .inline-in input{width:64px;padding:4px 6px;font-size:.85rem}
 footer{font-size:.76rem;color:var(--muted);max-width:90ch}
 @media (prefers-reduced-motion:no-preference){.bar{transition:height .25s,y .25s}.bar-track span{transition:width .3s}}
+
+/* Tombol cetak */
+.band-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn-print{display:inline-flex;align-items:center;gap:8px;font:700 .86rem var(--sans);background:var(--gold);color:#0F2742;border:none;border-radius:99px;padding:9px 16px;cursor:pointer;box-shadow:0 4px 14px -6px rgba(0,0,0,.45)}
+.btn-print:hover{filter:brightness(1.06)}
+.btn-print .ico{width:18px;height:18px}
+.print-only{display:none}
+
+/* Tampilan cetak: terang, satu kolom, panel isian jadi ringkasan */
+@media print{
+  @page{size:A4;margin:12mm}
+  :root,:root[data-theme="dark"]{
+    --bg:#F2F6FB; --surface:#FFFFFF; --ink:#0F2742; --muted:#5A6B82; --line:#DCE5F0;
+    --blue:#0B5CAB; --blue-deep:#073F78; --blue-soft:#E5EFFA;
+    --green:#0E9A4B; --green-soft:#E2F4E9; --gold:#F2A900; color-scheme:light}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{font-size:12px;background:#fff}
+  .no-print,.chips,.panel .hint,details summary{display:none!important}
+  .print-only{display:block}
+  .band{padding-block:14px 16px}
+  main{padding-block:12px 0}
+  .grid{grid-template-columns:minmax(0,1fr);gap:12px}
+  .panel{position:static;box-shadow:none;padding:12px;gap:8px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+  .panel .head{grid-column:1/-1}
+  .panel .row2{grid-column:span 2}
+  .toggle{padding:6px 8px}
+  input[type=number],input[type=text]{padding:4px 8px;font-size:.9rem}
+  .prefix input{padding-left:32px}
+  .prefix span{left:9px}
+  .tiles{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+  .tile,.insight,.split>div,tr,.card .head,#chart{break-inside:avoid}
+  .card .head{break-after:avoid}
+  section.card{padding:12px;gap:10px}
+  .scroll{overflow:visible}
+  #chart svg{width:100%!important;height:auto!important}
+  .print-meta{font-size:.78rem;opacity:.86;margin-top:6px}
+}
 </style>
 
 </head>
@@ -128,6 +165,7 @@ footer{font-size:.76rem;color:var(--muted);max-width:90ch}
   <symbol id="i-umbrella" viewBox="0 0 24 24"><path d="M22 12a10 10 0 0 0-20 0Z"/><path d="M12 12v7a2 2 0 0 0 4 0"/><path d="M12 2v1"/></symbol>
   <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 18h6M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2Z"/></symbol>
   <symbol id="i-cap" viewBox="0 0 24 24"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></symbol>
+  <symbol id="i-print" viewBox="0 0 24 24"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6Z"/></symbol>
 </svg>
 
 <header class="band gut">
@@ -136,8 +174,12 @@ footer{font-size:.76rem;color:var(--muted);max-width:90ch}
       <div class="eyebrow">Peserta Bukan Penerima Upah · BPJS Ketenagakerjaan</div>
       <h1>Simulasi Manfaat BPU</h1>
       <p>Hitung iuran bulanan, proyeksi saldo Jaminan Hari Tua, serta perkiraan manfaat Jaminan Kecelakaan Kerja dan Jaminan Kematian berdasarkan penghasilan yang dilaporkan.</p>
+      <div class="print-only print-meta" id="printMeta"></div>
     </div>
-    <span class="pill"><i></i>Simulasi, bukan kanal resmi</span>
+    <div class="band-actions">
+      <span class="pill"><i></i>Simulasi, bukan kanal resmi</span>
+      <button type="button" class="btn-print no-print" id="btnPrint" aria-label="Cetak hasil simulasi"><svg class="ico"><use href="#i-print"/></svg>Cetak hasil</button>
+    </div>
   </div>
 </header>
 
@@ -334,6 +376,16 @@ footer{font-size:.76rem;color:var(--muted);max-width:90ch}
   ['jhtOn','disc','age','claim','ret'].forEach(id=>$(id).addEventListener('input',calc));
   $('chips').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;$('inc').value=Number(b.dataset.v).toLocaleString('id-ID');calc()});
   $('f').addEventListener('submit',e=>e.preventDefault());
+
+  // Cetak: buka tabel per tahun, isi tanggal cetak, lalu kembalikan seperti semula
+  const det=document.querySelector('details');let detWasOpen=false;
+  window.addEventListener('beforeprint',()=>{
+    calc();
+    detWasOpen=det.open; det.open=true;
+    $('printMeta').textContent='Dicetak '+new Date().toLocaleString('id-ID',{dateStyle:'long',timeStyle:'short'});
+  });
+  window.addEventListener('afterprint',()=>{det.open=detWasOpen});
+  $('btnPrint').addEventListener('click',()=>window.print());
   calc();
 })();
 </script>
