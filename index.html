@@ -115,6 +115,8 @@ details summary{cursor:pointer;font-weight:600;font-size:.86rem;color:var(--blue
 .inline-in{display:inline-flex;align-items:center;gap:6px}
 .inline-in input{width:64px;padding:4px 6px;font-size:.85rem}
 footer{font-size:.76rem;color:var(--muted);max-width:90ch}
+.alert{font-size:.84rem;background:color-mix(in srgb,var(--gold) 14%,var(--surface));border-left:4px solid var(--gold);border-radius:10px;padding:10px 12px}
+.alert .mono{font-family:var(--mono);font-weight:600}
 @media (prefers-reduced-motion:no-preference){.bar{transition:height .25s,y .25s}.bar-track span{transition:width .3s}}
 
 /* Tombol cetak */
@@ -214,7 +216,7 @@ footer{font-size:.76rem;color:var(--muted);max-width:90ch}
         <div class="tile hero"><span class="top"><svg class="ico"><use href="#i-receipt"/></svg><span class="k">Iuran per bulan</span></span><span class="v" id="tIuran">–</span><span class="s" id="tIuranS"></span></div>
         <div class="tile"><span class="top g"><svg class="ico"><use href="#i-coins"/></svg><span class="k" id="tJhtK">Saldo JHT</span></span><span class="v" id="tJht">–</span><span class="s" id="tJhtS"></span></div>
         <div class="tile"><span class="top"><svg class="ico"><use href="#i-shield"/></svg><span class="k">Meninggal akibat kecelakaan kerja</span></span><span class="v" id="tJkk">–</span><span class="s">+ beasiswa 2 anak s.d. Rp174 jt</span></div>
-        <div class="tile"><span class="top"><svg class="ico"><use href="#i-umbrella"/></svg><span class="k">Meninggal bukan kecelakaan kerja</span></span><span class="v">Rp42.000.000</span><span class="s">+ beasiswa jika iuran ≥ 3 tahun</span></div>
+        <div class="tile"><span class="top"><svg class="ico"><use href="#i-umbrella"/></svg><span class="k">Meninggal bukan kecelakaan kerja</span></span><span class="v">Rp42.000.000</span><span class="s">+ beasiswa jika iuran ≥ 3 tahun<br>Kepesertaan &lt; 3 bulan: hanya biaya pemakaman</span></div>
       </div>
 
       <div class="insight"><svg class="ico"><use href="#i-bulb"/></svg><div id="insight"></div></div>
@@ -267,6 +269,7 @@ footer{font-size:.76rem;color:var(--muted);max-width:90ch}
             <tr class="total"><td>Total uang tunai</td><td></td><td class="num">Rp42.000.000</td></tr>
           </tbody>
         </table></div>
+        <div class="alert" role="note"><b>Catatan:</b> Jika masa kepesertaan kurang dari 3 bulan saat peserta meninggal, ahli waris hanya mendapat biaya pemakaman sebesar <b class="mono">Rp10.000.000</b>.</div>
         <div class="head" style="margin-top:4px"><span class="badge g"><svg class="ico"><use href="#i-cap"/></svg></span><div class="lbl">Beasiswa pendidikan (maks. 2 anak)</div></div>
         <div class="scroll"><table>
           <thead><tr><th>Jenjang</th><th class="num">Per anak / tahun</th><th class="num">Maks. tahun</th><th class="num">Maks. per anak</th></tr></thead>
@@ -345,7 +348,7 @@ footer{font-size:.76rem;color:var(--muted);max-width:90ch}
         yr.push({y,age:age+y,c,contrib,contribAll:contrib+saldo0,bal})}
       const last=yr[yr.length-1], dev=last.bal-last.contribAll;
       const pa=last.bal>0?last.contribAll/last.bal*100:100, pb=100-pa;
-      $('tJhtK').textContent='Saldo JHT usia '+claim; $('tJht').textContent=rp(last.bal); $('tJhtS').textContent=years+' tahun iuran · '+(r*100).toLocaleString('id-ID')+'%/th';
+      $('tJhtK').textContent='Saldo JHT usia '+claim; $('tJht').textContent=rp(last.bal); $('tJhtS').textContent='Estimasi dengan bunga '+(r*100).toLocaleString('id-ID')+'%/th · '+years+' tahun iuran';
       $('jhtSplit').innerHTML=`<div><div class="k">Total iuran${saldo0?' + saldo awal':''}</div><div class="v">${rp(last.contribAll)}</div></div><div><div class="k">Hasil pengembangan</div><div class="v">${rp(dev)}</div></div><div><div class="k">Saldo saat usia ${claim}</div><div class="v">${rp(last.bal)}</div></div>`;
       $('mixA').style.width=pa+'%'; $('mixB').style.width=pb+'%';
       $('mixAp').textContent=pa.toFixed(0)+'%'; $('mixBp').textContent=pb.toFixed(0)+'%';
