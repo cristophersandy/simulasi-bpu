@@ -348,7 +348,7 @@ footer{font-size:.76rem;color:var(--muted);max-width:90ch}
         yr.push({y,age:age+y,c,contrib,contribAll:contrib+saldo0,bal})}
       const last=yr[yr.length-1], dev=last.bal-last.contribAll;
       const pa=last.bal>0?last.contribAll/last.bal*100:100, pb=100-pa;
-      $('tJhtK').textContent='Saldo JHT usia '+claim; $('tJht').textContent=rp(last.bal); $('tJhtS').textContent='Estimasi dengan bunga '+(r*100).toLocaleString('id-ID')+'%/th · '+years+' tahun iuran';
+      $('tJhtK').textContent='Saldo JHT usia '+claim; $('tJht').textContent=rp(last.bal); $('tJhtS').textContent='Estimasi dengan hasil pengembangan '+(r*100).toLocaleString('id-ID')+'%/th · '+years+' tahun iuran';
       $('jhtSplit').innerHTML=`<div><div class="k">Total iuran${saldo0?' + saldo awal':''}</div><div class="v">${rp(last.contribAll)}</div></div><div><div class="k">Hasil pengembangan</div><div class="v">${rp(dev)}</div></div><div><div class="k">Saldo saat usia ${claim}</div><div class="v">${rp(last.bal)}</div></div>`;
       $('mixA').style.width=pa+'%'; $('mixB').style.width=pb+'%';
       $('mixAp').textContent=pa.toFixed(0)+'%'; $('mixBp').textContent=pb.toFixed(0)+'%';
